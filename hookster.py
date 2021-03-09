@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from database import Event, HooksterDatabase
+from hookster.database import Event, HooksterDatabase
 
 db = HooksterDatabase('hookster.db')
 
