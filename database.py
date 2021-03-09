@@ -8,11 +8,16 @@ import uuid
 
 class Event:
     """Represents a single Calendar Event"""
-
     def __init__(self, name, description):
         self.id = _generate_uuid()
         self.name = name
         self.description = description
+
+    def __str__(self):
+        return f'({self.id}, {self.name}, {self.description})'
+
+    def _setId(self, id):
+        self.id = id
 
 
 class HooksterDatabase:
@@ -75,6 +80,20 @@ class HooksterDatabase:
                 (event_id, dependency_id))
 
         self.sync()
+
+    def search_events(self, pattern):
+        """Returns events with names matching the given pattern"""
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM Events WHERE name LIKE '%' || ? || '%'",
+                (pattern,))
+        results = cursor.fetchall()
+        events = []
+        for row in results:
+            event = Event(row[1], row[2])
+            event._setId(row[0])
+            events.append(event)
+
+        return events
 
     def _create_tables(self):
         cursor = self.connection.cursor()
