@@ -7,5 +7,9 @@ a way as possible.
 
 We'll store our data as an `sqlite3` database for now.
 
+The table structure will be as follows:
+
 - `Events(Event ID, Event Name, Event Description)`
 - `Dependencies(Event ID, Dependent Event's ID)`
+
+Later, we'll use Xapian or FTS5 to index/search our data.
