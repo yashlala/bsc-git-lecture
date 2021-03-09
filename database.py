@@ -44,14 +44,13 @@ class HooksterDatabase:
         Returns a list of handles to the inserted events.
         """
 
+        # TODO: use executeMany instead
         cursor = self.connection.cursor()
         handles = []
         for event in events:
             handles.append(event.id)
-            cursor.execute(
-                "INSERT INTO Events VALUES "
-                + f"('{event.id}', '{event.name}', '{event.description}')"
-            )
+            cursor.execute("INSERT INTO Events VALUES (?, ?, ?)",
+                    (event.id, event.name, event.description))
 
         self.sync()
         return handles
@@ -71,34 +70,29 @@ class HooksterDatabase:
         else:
             dependency_id = dependency
 
-        self.connection.cursor().execute(
-            f"INSERT INTO Dependencies VALUES('{event_id}', '{dependency_id}')"
-        )
+        cursor = self.connection.cursor()
+        cursor.execute("INSERT INTO Dependencies VALUES (?, ?)",
+                (event_id, dependency_id))
 
         self.sync()
 
     def _create_tables(self):
         cursor = self.connection.cursor()
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE Events (
                 id TEXT,
                 name TEXT,
                 description TEXT,
-                PRIMARY KEY (id)
-            )
-            """
-        )
-        cursor.execute(
-            """
+                PRIMARY KEY (id))
+            """)
+
+        cursor.execute("""
             CREATE TABLE Dependencies (
                 prerequisite TEXT,
                 event TEXT,
                 FOREIGN KEY(prerequisite) REFERENCES Events(id)
-                FOREIGN KEY(event) REFERENCES Events(id)
-            )
-            """
-        )
+                FOREIGN KEY(event) REFERENCES Events(id))
+            """)
 
 
 def _generate_uuid():
