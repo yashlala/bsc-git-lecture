@@ -1,4 +1,4 @@
-"""Interface with the Hookster Database"""
+"""This module provides an implementation of Hookster's database methods."""
 
 
 import sqlite3
