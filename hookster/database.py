@@ -16,6 +16,11 @@ class Event:
     def __str__(self):
         return f'({self.id}, {self.name}, {self.description})'
 
+    def __eq__(self, other):
+        if isinstance(other, Event):
+            return self.id == other.id
+        return self.id == other
+
     def _setId(self, id):
         self.id = id
 
