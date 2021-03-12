@@ -108,8 +108,12 @@ class HooksterDatabase:
             CREATE TABLE Dependencies (
                 prerequisite TEXT,
                 event TEXT,
-                FOREIGN KEY(prerequisite) REFERENCES Events(id)
-                FOREIGN KEY(event) REFERENCES Events(id))
+                FOREIGN KEY(prerequisite)
+                    REFERENCES Events(id)
+                    ON DELETE CASCADE,
+                FOREIGN KEY(event)
+                    REFERENCES Events(id)
+                    ON DELETE CASCADE)
             """)
 
 
