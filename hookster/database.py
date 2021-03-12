@@ -94,6 +94,27 @@ class HooksterDatabase:
 
         return events
 
+    def find_direct_dependencies(self, event):
+        """Returns all events that are direct dependencies of event.
+
+        Arguments: event should be an Event or a db handle to an Event.
+        Returns: A list of dependency events.
+        """
+
+        key = _extract_key(event)
+        cursor = self.connection.cursor()
+        cursor.execute("""
+            SELECT E.id, E.name, E.description
+            FROM Events E, Dependencies D
+            WHERE (D.prerequisite = ? AND E.id = D.event)""",
+            (key,))
+        results = cursor.fetchall()
+        events = []
+        for row in results:
+            event = Event(name=row[1], description=row[2], id=row[0])
+            events.append(event)
+        return events
+
     def _create_tables(self):
         cursor = self.connection.cursor()
         cursor.execute("""

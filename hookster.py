@@ -10,6 +10,7 @@ handle = db.insert_event(Event('forward simbas response to nala', 'let her deal 
 # Works with both database handles and with the original objects.
 db.insert_dependency(event, handle)
 
-print(list(map(str, db.search_events('nala'))))
+for event in db.find_direct_dependencies(*db.search_events('wait')):
+    print(event)
 
 # vim: ft=python
