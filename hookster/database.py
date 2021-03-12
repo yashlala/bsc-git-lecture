@@ -7,9 +7,12 @@ import uuid
 
 
 class Event:
-    """Represents a single Calendar Event"""
-    def __init__(self, name, description):
-        self.id = _generate_uuid()
+    """Represents a single Calendar Event.
+
+    Every event is generated with a unique ID, unless otherwise specified.
+    """
+    def __init__(self, name, description, id=None):
+        self.id = _generate_uuid() if id == None else id
         self.name = name
         self.description = description
 
@@ -17,12 +20,10 @@ class Event:
         return f'({self.id}, {self.name}, {self.description})'
 
     def __eq__(self, other):
-        if isinstance(other, Event):
-            return self.id == other.id
-        return self.id == other
-
-    def _setId(self, id):
-        self.id = id
+        try:
+            return self.id == _extract_key(other)
+        except TypeError:
+            return False
 
 
 class HooksterDatabase:
@@ -71,14 +72,8 @@ class HooksterDatabase:
         Accepts either Events or handles to Events.
         """
 
-        if isinstance(event, Event):
-            event_id = event.id
-        else:
-            event_id = event
-        if isinstance(dependency, Event):
-            dependency_id = dependency.id
-        else:
-            dependency_id = dependency
+        event_id = _extract_key(event)
+        dependency_id = _extract_key(dependency)
 
         cursor = self.connection.cursor()
         cursor.execute("INSERT INTO Dependencies VALUES (?, ?)",
@@ -94,8 +89,7 @@ class HooksterDatabase:
         results = cursor.fetchall()
         events = []
         for row in results:
-            event = Event(row[1], row[2])
-            event._setId(row[0])
+            event = Event(row[1], row[2], id=row[0])
             events.append(event)
 
         return events
@@ -120,4 +114,15 @@ class HooksterDatabase:
 
 
 def _generate_uuid():
+    """Create a random UUID."""
     return str(uuid.uuid1())
+
+
+def _extract_key(obj):
+    """Convert a handle or Event handle into a Database Event ID."""
+    if isinstance(obj, Event):
+        return obj.id
+    elif isinstance(obj, str):
+        return obj
+
+    raise TypeError('Must provide an Event or Event handle (string)')
