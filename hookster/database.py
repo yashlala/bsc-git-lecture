@@ -60,7 +60,8 @@ class HooksterDatabase:
         handles = []
         for event in events:
             handles.append(event.id)
-            cursor.execute("INSERT INTO Events VALUES (?, ?, ?)",
+            cursor.execute(
+                    "INSERT INTO Events VALUES (?, ?, ?)",
                     (event.id, event.name, event.description))
 
         self.sync()
@@ -76,7 +77,8 @@ class HooksterDatabase:
         dependency_id = _extract_key(dependency)
 
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO Dependencies VALUES (?, ?)",
+        cursor.execute(
+                "INSERT INTO Dependencies VALUES (?, ?)",
                 (event_id, dependency_id))
 
         self.sync()
@@ -84,7 +86,8 @@ class HooksterDatabase:
     def search_events(self, pattern):
         """Returns events with names matching the given pattern"""
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM Events WHERE name LIKE '%' || ? || '%'",
+        cursor.execute(
+                "SELECT * FROM Events WHERE name LIKE '%' || ? || '%'",
                 (pattern,))
         results = cursor.fetchall()
         events = []
@@ -103,8 +106,8 @@ class HooksterDatabase:
 
         key = _extract_key(event)
         cursor = self.connection.cursor()
-        cursor.execute("""
-            SELECT E.id, E.name, E.description
+        cursor.execute(
+            """SELECT E.id, E.name, E.description
             FROM Events E, Dependencies D
             WHERE (D.prerequisite = ? AND E.id = D.event)""",
             (key,))
