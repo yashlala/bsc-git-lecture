@@ -2,10 +2,19 @@
 
 Hookster is an event-based human scheduler.
 
-*NOTE*:
-This project is in its infancy, and is not yet ready for use.
-Because the goals of the project are still changing, there's a good chance this
-documentation isn't even ready for use.
+It was created to address a need with my existing time-scheduling solutions,
+to give me some much-needed coding practice, to teach me how Python modules
+work, and to teach me SQL.
+
+Today:
+
+- I've tried Taskwarrior -- it does what I want it to do, and integrates well
+  with my existing shell scripts (bless you, JSON).
+- I've gotten very comfortable with SQL thanks to a DB class.
+- I have work, so coding practice isn't hard to find.
+- This project did teach me how modules/Python packaging works! Neat.
+
+With all goals met, I'm setting this project aside.
 
 ## Motivation
 
